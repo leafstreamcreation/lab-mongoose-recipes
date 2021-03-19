@@ -1,4 +1,9 @@
+const express = require("express");
+const hbs = require("hbs");
+const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+
+const app = express();
 
 // Import of the model Recipe from './models/Recipe.model.js'
 const Recipe = require("./models/Recipe.model");
@@ -16,53 +21,68 @@ mongoose
   })
   .then((self) => {
     console.log(`Connected to the database: "${self.connection.name}"`);
-    // Before adding any documents to the database, let's delete all previous entries
     return self.connection.dropDatabase();
   })
   .then(() => {
-    // Run your code here, after you have insured that the connection was made
-    // const firstRecipe = {
-    //   title: "Fluffy Buttermilk Pancakes",
-    //   level: "Easy Peasy",
-    //   ingredients: [
-    //     "2 cups flour",
-    //     "2 Tbsp sugar",
-    //     "1 tsp baking soda",
-    //     "2 tsp baking powder",
-    //     "3/4 tsp salt",
-    //     "2 eggs, lightly beaten",
-    //     "2 tsp vanilla extract",
-    //     "2 cups buttermilk",
-    //   ],
-    //   cuisine: "American",
-    //   dishType: "breakfast",
-    //   image: null,
-    //   duration: 30,
-    //   creator: "Derek Noble",
-    //   created: null,
-    // };
-    // Recipe.create(firstRecipe)
-    //   .then((recipe) => console.log(`A new recipe "${recipe.title}"`))
-    //   .catch((error) =>
-    //     console.log("An error happened while saving the first recipe: ", error)
-    //   );
-
-    return Recipe.insertMany(data)
+    Recipe.insertMany(data)
       .then((recipes) => {
-        recipes.forEach((recipe) => console.log(recipe.title));
-        Recipe.deleteOne({ title: "Carrot Cake" }, (error) => {
-          if (error) console.log("error during deletion: ", error);
-          else console.log("Deleted: Carrot Cake");
-          Recipe.find({}, (error, recipes) => {
-            if (error) console.log("Error finding recipes: ", error);
-            else recipes.forEach((recipe) => console.log(recipe.title));
-          });
-        });
+        recipes.forEach((recipe) =>
+          console.log("Added default recipe: ", recipe.title)
+        );
       })
       .catch((error) =>
-        console.log("there was an error inserting recipe data: ", error)
+        console.log("Error inserting default recipes: ", error)
       );
   })
   .catch((error) => {
     console.error("Error connecting to the database", error);
   });
+
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/views");
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (request, result, next) => {
+  Recipe.find({})
+    .then((recipes) => {
+      result.render("recipes-index", recipes);
+    })
+    .catch((error) => {
+      result.send("Error: could not retrieve recipes");
+      console.log("Error retrieving recipes: ", error);
+    });
+});
+
+app.get("/recipes/:id", (request, result, next) => {
+  Recipe.findById(request.params.id)
+    .then((recipe) => {
+      result.render("recipe-detail", recipe);
+    })
+    .catch((error) => {
+      result.send(`Unable to locate recipe: ${request.params.id}`);
+      console.log("Error retrieving recipe: ", error);
+    });
+});
+
+app.get("/new-recipe", (request, result, next) => {
+  result.render("new-recipe");
+});
+
+app.post("/create-recipe", (request, result, next) => {
+  result.redirect("/");
+});
+
+app.post("/delete-recipe/:id", (request, result, next) => {
+  Recipe.findByIdAndDelete(request.params.id)
+    .then((recipe) => {
+      console.log(`Deleted Recipe: ${recipe.title}`);
+      result.redirect("/");
+    })
+    .catch((error) => {
+      console.log(`Error in deleting recipe ${request.params.id}: `, error);
+      result.redirect("/");
+    });
+});
+
+app.listen(3000, () => console.log("Recipes running on port 3000!"));

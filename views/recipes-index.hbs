@@ -1,0 +1,13 @@
+<div>
+    <div>
+        <a href="/new-recipe">Add Recipe</a>
+    </div>
+    {{#each this}}
+    {{#if this.title}}
+    <a href="/recipes/{{this.id}}">
+        <img src={{this.image}} alt="">
+        <h1>{{this.title}}</h1>
+    </a>
+    {{/if}}
+    {{/each}}
+</div>
