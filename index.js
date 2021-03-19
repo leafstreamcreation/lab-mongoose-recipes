@@ -70,7 +70,22 @@ app.get("/new-recipe", (request, result, next) => {
 });
 
 app.post("/create-recipe", (request, result, next) => {
-  result.redirect("/");
+  Recipe.create({
+    title: request.body.title,
+    level: request.body.level,
+    ingredients: request.body.ingredients,
+    cuisine: request.body.cuisine,
+    dishType: request.body.dishType,
+    image: request.body.image,
+    duration: request.body.duration,
+    creator: request.body.creator,
+    created: request.body.date,
+  })
+    .then((recipe) => {
+      console.log(`Created new recipe: ${recipe.title}`);
+      result.redirect("/");
+    })
+    .catch((error) => console.log("Error creating recipe: ", error));
 });
 
 app.post("/delete-recipe/:id", (request, result, next) => {
@@ -81,6 +96,28 @@ app.post("/delete-recipe/:id", (request, result, next) => {
     })
     .catch((error) => {
       console.log(`Error in deleting recipe ${request.params.id}: `, error);
+      result.redirect("/");
+    });
+});
+
+app.post("/update-recipe/:id", (request, result, next) => {
+  Recipe.findByIdAndUpdate(request.params.id, {
+    title: request.body.title,
+    level: request.body.level,
+    ingredients: request.body.ingredients,
+    cuisine: request.body.cuisine,
+    dishType: request.body.dishType,
+    image: request.body.image,
+    duration: request.body.duration,
+    creator: request.body.creator,
+    created: request.body.date,
+  })
+    .then((recipe) => {
+      console.log(`Updated Recipe: ${recipe.title}`);
+      result.redirect("/");
+    })
+    .catch((error) => {
+      console.log(`Error in updating recipe ${request.params.id}: `, error);
       result.redirect("/");
     });
 });

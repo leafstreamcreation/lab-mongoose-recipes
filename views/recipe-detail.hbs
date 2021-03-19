@@ -1,5 +1,93 @@
 <a href="/">Go Back</a>
-<h1>Detail view for: {{title}}</h1>
-<form action="/delete-recipe/{{id}}" method="POST">
-    <button>Delete Recipe</button>
+<div>
+    <img src={{image}} alt="">
+    <p>{{image}}</p>
+    <h1>{{title}}</h1>
+    <p>Difficulty: {{level}}</p>
+    <p>Cooking Time: {{duration}}</p>
+    <h3>Ingredients:</h3>
+    <ul>
+        {{#each ingredients}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+    <p>Cuisine: {{cuisine}}</p>
+    <p>Category: {{dishType}}</p>
+    <p>By: {{creator}}</p>
+    <p>On: {{created}}</p>
+</div>
+
+<div>
+    <form action="/delete-recipe/{{id}}" method="POST">
+        <button>Delete Recipe</button>
+    </form>
+</div>
+<form id="edit-form" action="/update-recipe/{{id}}" method="POST">
+    <div>
+        <label>Title:</label>
+        <input type="text" name="title" placeholder={{title}}>
+    </div>
+    <div>
+        <label>Difficulty *:</label>
+        <input type="text" name="level" placeholder={{level}}>
+    </div>
+    <h3>Ingredients:</h3>
+    <ul>
+        {{#each ingredients}}
+        <li><input type="text" , name="ingredients[]" placeholder={{this}}></li>
+        {{/each}}
+    </ul>
+    <div>
+        <label>Cuisine:</label>
+        <input type="text" name="cuisine" placeholder={{cuisine}}>
+    </div>
+    <div>
+        <label>Category *:</label>
+        <input type="text" name="dishType" placeholder={{dishType}}>
+    </div>
+    <div>
+        <label>Image *:</label>
+        <input type="text" name="image" placeholder={{image}}>
+    </div>
+    <div>
+        <label>Time to Cook *:</label>
+        <input type="number" name="duration" placeholder={{duration}}>
+    </div>
+    <div>
+        <label>Author *:</label>
+        <input type="text" name="creator" placeholder={{creator}}>
+    </div>
+    <div>
+        <label>Date *:</label>
+        <input type="date" name="created" placeholder={{created}}>
+    </div>
+    <button>Update Recipe</button>
 </form>
+{{!-- title: { type: String, required: true, unique: true },
+level: {
+type: String,
+enum: ["Easy Peasy", "Amateur Chef", "UltraPro Chef"],
+default: "Easy Peasy",
+},
+ingredients: [String],
+cuisine: { type: String, required: true },
+dishType: {
+type: String,
+enum: [
+"breakfast",
+"main_course",
+"soup",
+"snack",
+"drink",
+"dessert",
+"other",
+],
+default: "other",
+},
+image: {
+type: String,
+default: "https://images.media-allrecipes.com/images/75131.jpg",
+},
+duration: { type: Number, min: 0 },
+creator: String,
+created: { type: Date, default: new Date() }, --}}

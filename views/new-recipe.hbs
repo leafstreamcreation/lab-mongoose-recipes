@@ -1,4 +1,67 @@
 <form action="create-recipe" method="POST">
-    <h1>Start of a recipe creation form</h1>
+    <div>
+        <label>Title:</label>
+        <input type="text" name="title">
+    </div>
+    <div>
+        <label>Difficulty *:</label>
+        <input type="text" name="level">
+    </div>
+    <div>
+        <label>Ingredients *:</label>
+        <input type="text" name="ingredients">
+    </div>
+    <div>
+        <label>Cuisine:</label>
+        <input type="text" name="cuisine">
+    </div>
+    <div>
+        <label>Category *:</label>
+        <input type="text" name="dishType">
+    </div>
+    <div>
+        <label>Image *:</label>
+        <input type="text" name="image">
+    </div>
+    <div>
+        <label>Time to Cook *:</label>
+        <input type="number" name="duration">
+    </div>
+    <div>
+        <label>Author *:</label>
+        <input type="text" name="creator">
+    </div>
+    <div>
+        <label>Date *:</label>
+        <input type="date" name="created">
+    </div>
     <button>Create</button>
 </form>
+{{!-- title: { type: String, required: true, unique: true },
+level: {
+type: String,
+enum: ["Easy Peasy", "Amateur Chef", "UltraPro Chef"],
+default: "Easy Peasy",
+},
+ingredients: [String],
+cuisine: { type: String, required: true },
+dishType: {
+type: String,
+enum: [
+"breakfast",
+"main_course",
+"soup",
+"snack",
+"drink",
+"dessert",
+"other",
+],
+default: "other",
+},
+image: {
+type: String,
+default: "https://images.media-allrecipes.com/images/75131.jpg",
+},
+duration: { type: Number, min: 0 },
+creator: String,
+created: { type: Date, default: new Date() }, --}}
